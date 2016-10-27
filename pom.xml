@@ -82,6 +82,7 @@
         <module>rdbmswriter</module>
         <module>hbase11xwriter</module>
         <module>hbase094xwriter</module>
+        <module>gpdbwriter</module>
 
         <!-- some support module -->
         <module>plugin-rdbms-util</module>
