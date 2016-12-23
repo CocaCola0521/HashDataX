@@ -74,15 +74,18 @@ GpdbWriter通过 DataX 框架获取 Reader 生成的协议数据，根据你配�
                         "username": "xx",
                         "password": "xx",
                         "column": [
-                            "id",
-                            "name"
+                            "name",
+                            "fileSize"，
+                            “fileDate”,
+                            "flagOpen",
+                            "memo"
                         ],
                         "preSql": [
-                            "delete from test"
+                            "truncate table test"
                         ],
                         "connection": [
                             {
-                                "jdbcUrl": "jdbc:postgresql://127.0.0.1:3002/datax",
+                                "jdbcUrl": "jdbc:postgresql://192.168.0.3:5432/tutorial",
                                 "table": [
                                     "test"
                                 ]
@@ -219,3 +222,5 @@ A: 对于GPDB 的Append optimized table 和 HAWQ，单条记录插入的效率�
 
 
 ***
+
+
