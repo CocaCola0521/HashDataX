@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.PipedOutputStream;
 import java.io.PipedInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.sql.Connection;
@@ -134,30 +135,83 @@ public class GpdbWriter extends Writer {
 					return sb.toString();
 				}
 
-				protected byte[] serializeRecord(Record record) {
+				/**
+				 * Non-printable characters are inserted as '\nnn' (octal) and
+				 * '\' as '\\'.
+				 */
+				protected String escapeBinary(byte[] data) {
+					StringBuilder sb = new StringBuilder();
+
+					for (int i = 0; i < data.length; ++i) {
+						if (data[i] == '\\') {
+							sb.append('\\');
+							sb.append('\\');
+						} else if (data[i] < 0x20 || data[i] > 0x7e) {
+							byte b = data[i];
+							char[] val = new char[3];
+							val[2] = (char)((b & 07) + '0');
+							b >>= 3;
+							val[1] = (char)((b & 07) + '0');
+							b >>= 3;
+							val[0] = (char)((b & 03) + '0');
+							sb.append('\\');
+							sb.append(val);
+						} else {
+							sb.append((char)(data[i]));
+						}
+					}
+
+					return sb.toString();
+				}
+
+				protected byte[] serializeRecord(Record record) throws UnsupportedEncodingException {
 					StringBuilder sb = new StringBuilder();
 					Column column;
 					for (int i = 0; i < this.columnNumber; i++) {
 						column = record.getColumn(i);
 						int columnSqltype = this.resultSetMetaData.getMiddle().get(i);
-						String data = column.asString();
 
-						if (data != null) {
-							switch (columnSqltype) {
-							case Types.CHAR:
-							case Types.NCHAR:
-							case Types.VARCHAR:
-							case Types.LONGVARCHAR:
-							case Types.NVARCHAR:
-							case Types.LONGNVARCHAR:
+						switch (columnSqltype) {
+						case Types.CHAR:
+						case Types.NCHAR:
+						case Types.VARCHAR:
+						case Types.LONGVARCHAR:
+						case Types.NVARCHAR:
+						case Types.LONGNVARCHAR: {
+							String data = column.asString();
+
+							if (data != null) {
 								sb.append(QUOTE);
 								sb.append(escapeString(data));
 								sb.append(QUOTE);
-								break;
-							default:
-								sb.append(data);
-								break;
 							}
+
+							break;
+						}
+						case Types.BINARY:
+						case Types.BIT:
+						case Types.BLOB:
+						case Types.CLOB:
+						case Types.LONGVARBINARY:
+						case Types.NCLOB:
+						case Types.VARBINARY: {
+							byte[] data = column.asBytes();
+
+							if (data != null) {
+								sb.append(escapeBinary(data));
+							}
+
+							break;
+						}
+						default: {
+							String data = column.asString();
+
+							if (data != null) {
+								sb.append(data);
+							}
+
+							break;
+						}
 						}
 
 						if (i + 1 < this.columnNumber) {
@@ -165,7 +219,7 @@ public class GpdbWriter extends Writer {
 						}
 					}
 					sb.append(NEWLINE);
-					return sb.toString().getBytes();
+					return sb.toString().getBytes("UTF-8");
 				}
 
 				protected String getCopySql(String tableName, List<String> columnList) {
