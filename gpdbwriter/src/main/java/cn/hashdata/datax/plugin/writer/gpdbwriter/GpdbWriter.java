@@ -49,6 +49,13 @@ public class GpdbWriter extends Writer {
 								writeMode));
 			}
 
+			int segment_reject_limit = this.originalConfig.getInt("segment_reject_limit", 0);
+
+			if (segment_reject_limit != 0 && segment_reject_limit < 2) {
+				throw DataXException.asDataXException(DBUtilErrorCode.CONF_ERROR,
+						"segment_reject_limit 必须为0或者大于等于2");
+			}
+
 			this.commonRdbmsWriterMaster = new CommonRdbmsWriter.Job(DATABASE_TYPE);
 			this.commonRdbmsWriterMaster.init(this.originalConfig);
 		}
@@ -224,11 +231,19 @@ public class GpdbWriter extends Writer {
 					return sb.toString().getBytes("UTF-8");
 				}
 
-				protected String getCopySql(String tableName, List<String> columnList) {
-					String sql = new StringBuilder().append("COPY ").append(tableName).append("(")
+				protected String getCopySql(String tableName, List<String> columnList, int segment_reject_limit) {
+					StringBuilder sb = new StringBuilder().append("COPY ").append(tableName).append("(")
 							.append(StringUtils.join(columnList, ","))
-							.append(") FROM STDIN WITH DELIMITER '|' NULL '' CSV QUOTE '\"' ESCAPE E'\\\\';")
-							.toString();
+							.append(") FROM STDIN WITH DELIMITER '|' NULL '' CSV QUOTE '\"' ESCAPE E'\\\\'");
+
+					if (segment_reject_limit >= 2) {
+						sb.append(" LOG ERRORS SEGMENT REJECT LIMIT ")
+							.append(segment_reject_limit).append(";");
+					} else {
+						sb.append(";");
+					}
+
+					String sql = sb.toString();
 					return sql;
 				}
 
@@ -238,8 +253,9 @@ public class GpdbWriter extends Writer {
 					Connection connection = DBUtil.getConnection(this.dataBaseType, this.jdbcUrl, username, password);
 					DBUtil.dealWithSessionConfig(connection, writerSliceConfig, this.dataBaseType, BASIC_MESSAGE);
 
+					int segment_reject_limit = writerSliceConfig.getInt("segment_reject_limit", 0);
 					PipedOutputStream out = new PipedOutputStream();
-					String sql = getCopySql(this.table, this.columns);
+					String sql = getCopySql(this.table, this.columns, segment_reject_limit);
 					CopyWorker worker = null;
 					Exception dataInError = null;
 
