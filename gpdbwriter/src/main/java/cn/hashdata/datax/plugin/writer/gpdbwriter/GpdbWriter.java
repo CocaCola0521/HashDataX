@@ -125,6 +125,8 @@ public class GpdbWriter extends Writer {
 					for (int i = 0; i < data.length(); ++i) {
 						char c = data.charAt(i);
 						switch (c) {
+						case 0x00:
+							continue;
 						case QUOTE:
 						case ESCAPE:
 							sb.append(ESCAPE);
