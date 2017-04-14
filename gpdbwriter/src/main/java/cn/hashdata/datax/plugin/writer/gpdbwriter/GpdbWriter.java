@@ -151,15 +151,15 @@ public class GpdbWriter extends Writer {
 						} else if (data[i] < 0x20 || data[i] > 0x7e) {
 							byte b = data[i];
 							char[] val = new char[3];
-							val[2] = (char)((b & 07) + '0');
+							val[2] = (char) ((b & 07) + '0');
 							b >>= 3;
-							val[1] = (char)((b & 07) + '0');
+							val[1] = (char) ((b & 07) + '0');
 							b >>= 3;
-							val[0] = (char)((b & 03) + '0');
+							val[0] = (char) ((b & 03) + '0');
 							sb.append('\\');
 							sb.append(val);
 						} else {
-							sb.append((char)(data[i]));
+							sb.append((char) (data[i]));
 						}
 					}
 
@@ -174,46 +174,46 @@ public class GpdbWriter extends Writer {
 						int columnSqltype = this.resultSetMetaData.getMiddle().get(i);
 
 						switch (columnSqltype) {
-						case Types.CHAR:
-						case Types.NCHAR:
-						case Types.VARCHAR:
-						case Types.LONGVARCHAR:
-						case Types.NVARCHAR:
-						case Types.LONGNVARCHAR: {
-							String data = column.asString();
-
-							if (data != null) {
-								sb.append(QUOTE);
-								sb.append(escapeString(data));
-								sb.append(QUOTE);
+							case Types.CHAR:
+							case Types.NCHAR:
+							case Types.VARCHAR:
+							case Types.LONGVARCHAR:
+							case Types.NVARCHAR:
+							case Types.LONGNVARCHAR: {
+								String data = column.asString();
+	
+								if (data != null) {
+									sb.append(QUOTE);
+									sb.append(escapeString(data));
+									sb.append(QUOTE);
+								}
+	
+								break;
 							}
-
-							break;
-						}
-						case Types.BINARY:
-						case Types.BIT:
-						case Types.BLOB:
-						case Types.CLOB:
-						case Types.LONGVARBINARY:
-						case Types.NCLOB:
-						case Types.VARBINARY: {
-							byte[] data = column.asBytes();
-
-							if (data != null) {
-								sb.append(escapeBinary(data));
+							case Types.BINARY:
+							case Types.BIT:
+							case Types.BLOB:
+							case Types.CLOB:
+							case Types.LONGVARBINARY:
+							case Types.NCLOB:
+							case Types.VARBINARY: {
+								byte[] data = column.asBytes();
+	
+								if (data != null) {
+									sb.append(escapeBinary(data));
+								}
+	
+								break;
 							}
-
-							break;
-						}
-						default: {
-							String data = column.asString();
-
-							if (data != null) {
-								sb.append(data);
+							default: {
+								String data = column.asString();
+	
+								if (data != null) {
+									sb.append(data);
+								}
+	
+								break;
 							}
-
-							break;
-						}
 						}
 
 						if (i + 1 < this.columnNumber) {
@@ -265,7 +265,8 @@ public class GpdbWriter extends Writer {
 												record.getColumnNumber(), this.columnNumber));
 							}
 
-							out.write(serializeRecord(record));
+							byte[] data = serializeRecord(record);
+							out.write(data);
 						}
 
 						out.flush();
