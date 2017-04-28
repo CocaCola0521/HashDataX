@@ -146,7 +146,6 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 				break;
 			}
 			case Types.BINARY:
-			case Types.BIT:
 			case Types.BLOB:
 			case Types.CLOB:
 			case Types.LONGVARBINARY:
