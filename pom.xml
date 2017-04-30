@@ -59,6 +59,7 @@
         <module>ossreader</module>
         <module>ftpreader</module>
         <module>mongodbreader</module>
+        <module>mongodbjsonreader</module>
         <module>rdbmsreader</module>
         <module>hbase11xreader</module>
         <module>hbase094xreader</module>
@@ -83,6 +84,7 @@
         <module>hbase11xwriter</module>
         <module>hbase094xwriter</module>
         <module>gpdbwriter</module>
+        <module>gpdbjsonwriter</module>
 
         <!-- some support module -->
         <module>plugin-rdbms-util</module>

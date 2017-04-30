@@ -1,0 +1,6 @@
+{
+    "name": "mongodbjsonreader",
+    "class": "com.alibaba.datax.plugin.reader.mongodbjsonreader.MongoDBJsonReader",
+    "description": "useScene: prod. mechanism: via mongoclient connect mongodb reader data concurrent.",
+    "developer": "alibaba"
+}
