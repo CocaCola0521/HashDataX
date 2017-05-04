@@ -80,6 +80,7 @@ public class CopyWriterJob extends CommonRdbmsWriter.Job {
 					errors = res.getInt(1);
 				}
 				res.close();
+				conn.commit();
 			} catch (SQLException e) {
 				LOG.debug("Fail to get error log info:" + e.getMessage());
 			}

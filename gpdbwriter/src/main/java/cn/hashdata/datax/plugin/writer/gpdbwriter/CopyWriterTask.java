@@ -1,12 +1,14 @@
 package cn.hashdata.datax.plugin.writer.gpdbwriter;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,15 +27,16 @@ import com.alibaba.datax.plugin.rdbms.util.DBUtil;
 import com.alibaba.datax.plugin.rdbms.util.DBUtilErrorCode;
 import com.alibaba.datax.plugin.rdbms.util.DataBaseType;
 import com.alibaba.datax.plugin.rdbms.writer.CommonRdbmsWriter;
+import com.alibaba.datax.plugin.rdbms.writer.util.WriterUtil;
 
 public class CopyWriterTask extends CommonRdbmsWriter.Task {
 	private static final char FIELD_DELIMITER = '|';
 	private static final char NEWLINE = '\n';
 	private static final char QUOTE = '"';
 	private static final char ESCAPE = '\\';
+	private static int MaxCsvSize = 4194304;
 	private static final Logger LOG = LoggerFactory.getLogger(CopyWriterTask.class);
-	
-	
+
 	protected static class CopyWorker extends Thread {
 		protected CopyManager mgr = null;
 		protected String sql = null;
@@ -55,6 +58,9 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 		public void run() {
 			try {
 				mgr.copyIn(sql, in);
+			} catch (IOException e) {
+				exce = new IOException(
+						"Failed to copy data into target table." + " Chack database logs for more information.");
 			} catch (Exception e) {
 				exce = e;
 			} finally {
@@ -193,11 +199,19 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 		return sql;
 	}
 
+	private void changeCsvSizelimit(Connection conn) {
+		List<String> sqls = new ArrayList<String>();
+		sqls.add("set gp_max_csv_line_length = " + Integer.toString(MaxCsvSize));
+		WriterUtil.executeSqls(conn, sqls, jdbcUrl, DataBaseType.PostgreSQL);
+	}
+
 	@Override
 	public void startWrite(RecordReceiver recordReceiver, Configuration writerSliceConfig,
 			TaskPluginCollector taskPluginCollector) {
 		Connection connection = DBUtil.getConnection(this.dataBaseType, this.jdbcUrl, username, password);
 		DBUtil.dealWithSessionConfig(connection, writerSliceConfig, this.dataBaseType, BASIC_MESSAGE);
+
+		changeCsvSizelimit(connection);
 
 		int segment_reject_limit = writerSliceConfig.getInt("segment_reject_limit", 0);
 		PipedOutputStream out = new PipedOutputStream();
@@ -226,7 +240,13 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 				}
 
 				byte[] data = serializeRecord(record);
-				out.write(data);
+
+				if (data.length > MaxCsvSize) {
+					String s = new String(data).substring(0, 100) + "...";
+					LOG.warn("数据元组超过 {} 字节长度限制被忽略。" + s, MaxCsvSize);
+				} else {
+					out.write(data);
+				}
 			}
 
 			out.flush();
