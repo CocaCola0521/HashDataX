@@ -6,7 +6,7 @@
 
 ## 1 快速介绍
 
-GpdbWriter插件实现了写入数据到 Greenplum Database 主库目的表的功能。在底层实现上，GpdbWriter通过JDBC连接远程 GPDB 数据库，并执行相应的 Copy TO 语句将数据写入 GPDB。
+GpdbWriter插件实现了写入数据到 Greenplum Database 主库目的表的功能。在底层实现上，GpdbWriter通过JDBC连接远程 GPDB 数据库，并执行相应的 Copy FROM 语句将数据写入 GPDB。
 
 GpdbWriter面向ETL开发工程师，他们使用GpdbWriter从数仓导入数据到GPDB。同时 GpdbWriter亦可以作为数据迁移工具为DBA等用户提供服务。
 
@@ -16,7 +16,7 @@ GpdbWriter面向ETL开发工程师，他们使用GpdbWriter从数仓导入数据
 GpdbWriter通过 DataX 框架获取 Reader 生成的协议数据，根据你配置生成相应的SQL插入语句
 
 
-* `copy to ...`
+* `copy from ...`
 
 <br />
 
@@ -77,7 +77,7 @@ GpdbWriter通过 DataX 框架获取 Reader 生成的协议数据，根据你配�
                         "column": [
                             "name",
                             "fileSize"，
-                            "fileDate”,
+                            "fileDate",
                             "flagOpen",
                             "memo"
                         ],
@@ -224,8 +224,11 @@ A: 使用postgresqlreader即可。
 
 **Q: 为什么不用postgresqlwriter插件，而要开发一个新的插件gpdbwriter？**
 
-A: 对于GPDB 的Append optimized table 和 HAWQ，单条记录插入的效率非常低，而gpdbwriter插件使用copy to语句而不是insert into语句，性能有巨大提升。
+A: 对于GPDB 的Append optimized table 和 HAWQ，单条记录插入的效率非常低，而gpdbwriter插件使用copy from语句而不是insert into语句，性能有巨大提升。
 
+**Q: 为什么会有单个元组 4MB 大小的限制？**
+
+A: 因为 GPDB 服务端 对 COPY FROM 的 CSV 格式做了这样的限制，如果单个元组大于4 MB，只能使用 insert。对于这种情况，推荐使用 postgresqlwriter。
 
 ***
 
