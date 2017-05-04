@@ -1,7 +1,7 @@
 package cn.hashdata.datax.plugin.writer.gpdbwriter;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.copy.CopyManager;
 import org.postgresql.core.BaseConnection;
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +59,8 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 		public void run() {
 			try {
 				mgr.copyIn(sql, in);
-			} catch (IOException e) {
-				exce = new IOException(
-						"Failed to copy data into target table." + " Chack database logs for more information.");
+			} catch (PSQLException e) {
+				exce = new IOException("无法向目标表写入数据: " + e.getMessage());
 			} catch (Exception e) {
 				exce = e;
 			} finally {
@@ -258,7 +258,6 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 			}
 
 			dataInError = e;
-			throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, e);
 		} finally {
 			try {
 				out.close();
@@ -274,17 +273,15 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 
 			DBUtil.closeDBResources(null, null, connection);
 
-			if (dataInError == null) {
-				// no error happen from data input side,
-				// check copy error
-				Exception copyError = worker.getCopyError();
+			// check copy error
+			Exception copyError = worker.getCopyError();
 
-				if (copyError != null) {
-					throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, copyError);
-				}
-			} else {
-				// ignore copy error if error happened on data input
-				// side
+			if (copyError != null) {
+				throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, copyError);
+			}
+
+			if (dataInError != null) {
+				throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, dataInError);
 			}
 		}
 	}
