@@ -77,7 +77,7 @@ GpdbWriter通过 DataX 框架获取 Reader 生成的协议数据，根据你配�
                         "column": [
                             "name",
                             "fileSize"，
-                            “fileDate”,
+                            "fileDate”,
                             "flagOpen",
                             "memo"
                         ],
