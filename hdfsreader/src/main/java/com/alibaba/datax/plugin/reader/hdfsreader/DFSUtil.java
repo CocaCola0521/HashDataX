@@ -118,9 +118,9 @@ public class DFSUtil {
     private HashSet<String> sourceHDFSAllFilesList = new HashSet<String>();
 
     public HashSet<String> getHDFSAllFiles(String hdfsPath){
-
+    	FileSystem hdfs = null;
         try {
-            FileSystem hdfs = FileSystem.get(hadoopConf);
+            hdfs = FileSystem.get(hadoopConf);
             //判断hdfsPath是否包含正则符号
             if(hdfsPath.contains("*") || hdfsPath.contains("?")){
                 Path path = new Path(hdfsPath);
@@ -143,6 +143,13 @@ public class DFSUtil {
                     "是否有读写权限，网络是否已断开！", hdfsPath);
             LOG.error(message);
             throw DataXException.asDataXException(HdfsReaderErrorCode.PATH_CONFIG_ERROR, e);
+        }finally{
+        	if (hdfs != null){
+        		try {
+					hdfs.close();
+				} catch (IOException ignore) {
+				}
+        	}
         }
     }
 
@@ -279,6 +286,12 @@ public class DFSUtil {
                 }
             } catch (IOException e) {
                 LOG.warn(String.format("finally: 关闭RCFileRecordReader失败, %s",e.getMessage()));
+            }
+            if (fs != null) {
+            	try {
+					fs.close();
+				} catch (IOException ignored) {
+				}
             }
         }
 
@@ -520,9 +533,10 @@ public class DFSUtil {
     public boolean checkHdfsFileType(String filepath, String specifiedFileType){
 
         Path file = new Path(filepath);
+        FileSystem fs = null;
 
         try {
-            FileSystem fs = FileSystem.get(hadoopConf);
+            fs = FileSystem.get(hadoopConf);
             FSDataInputStream in = fs.open(file);
 
             if(StringUtils.equalsIgnoreCase(specifiedFileType, Constant.CSV)
@@ -559,6 +573,12 @@ public class DFSUtil {
                     "请检查您文件类型和文件是否正确。", filepath);
             LOG.error(message);
             throw DataXException.asDataXException(HdfsReaderErrorCode.READ_FILE_ERROR, message, e);
+        }finally{
+        	if (fs != null)
+				try {
+					fs.close();
+				} catch (IOException ignore) {
+				}
         }
         return false;
     }
