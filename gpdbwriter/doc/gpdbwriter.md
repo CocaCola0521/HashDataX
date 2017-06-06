@@ -74,6 +74,9 @@ GpdbWriter通过 DataX 框架获取 Reader 生成的协议数据，根据你配�
                         "username": "xx",
                         "password": "xx",
                         "segment_reject_limit": 0,
+                        "copy_queue_size": 100000,
+                        "num_copy_processor": 4,
+                        "num_copy_writer": 1,
                         "column": [
                             "name",
                             "fileSize",
@@ -134,8 +137,23 @@ GpdbWriter通过 DataX 框架获取 Reader 生成的协议数据，根据你配�
 
 * **segment\_reject\_limit**
   * 描述： 每个计算节点可接受的错误行数，0为不接受，或者大于1的正整数
-  * 不选： 否
+  * 必选： 否
   * 默认值：0
+
+* **copy\_queue\_size**
+  * 描述： 线程异步队列大小，增大此参数增加内存消耗，提升性能
+  * 必选： 否
+  * 默认值：100000
+
+* **num\_copy\_processor**
+  * 描述： 用于进行格式化数据的线程数
+  * 必选： 否
+  * 默认值：4
+
+* **num_copy_writer**
+  * 描述： 写入数据库的并发数
+  * 必选： 否
+  * 默认值：1
 
 * **table**
 
