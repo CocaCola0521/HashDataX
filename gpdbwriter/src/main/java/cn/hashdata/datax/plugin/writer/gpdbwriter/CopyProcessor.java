@@ -45,8 +45,12 @@ public class CopyProcessor implements Callable<Long> {
 		Thread.currentThread().setName("CopyProcessor");
 		Record record = null;
 
-		while (task.moreRecord() || (record = queueIn.poll(1000L, TimeUnit.MILLISECONDS)) != null) {
-			if (record == null) {
+		while (true) {
+			record = queueIn.poll(1000L, TimeUnit.MILLISECONDS);
+
+			if (record == null && false == task.moreRecord()) {
+				break;
+			} else if (record == null) {
 				continue;
 			}
 

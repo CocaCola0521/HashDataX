@@ -21,8 +21,6 @@ import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.datax.common.element.Column;
-import com.alibaba.datax.common.element.Record;
 import com.alibaba.datax.common.exception.DataXException;
 import com.alibaba.datax.plugin.rdbms.util.DBUtil;
 import com.alibaba.datax.plugin.rdbms.util.DBUtilErrorCode;
@@ -94,8 +92,12 @@ public class CopyWorker implements Callable<Long> {
 
 		byte[] data = null;
 		try {
-			while (task.moreData() || (data = queue.poll(1000L, TimeUnit.MILLISECONDS)) != null) {
-				if (data == null) {
+			while (true) {
+				data = queue.poll(1000L, TimeUnit.MILLISECONDS);
+
+				if (data == null && false == task.moreData()) {
+					break;
+				} else if (data == null) {
 					continue;
 				}
 
