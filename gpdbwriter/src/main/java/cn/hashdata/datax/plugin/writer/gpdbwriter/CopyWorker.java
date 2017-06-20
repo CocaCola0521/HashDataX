@@ -94,8 +94,8 @@ public class CopyWorker implements Callable<Long> {
 
 		byte[] data = null;
 		try {
-			while (task.moreData()) {
-				if ((data = queue.poll(1000L, TimeUnit.MILLISECONDS)) == null) {
+			while (task.moreData() || (data = queue.poll(1000L, TimeUnit.MILLISECONDS)) != null) {
+				if (data == null) {
 					continue;
 				}
 
@@ -111,6 +111,11 @@ public class CopyWorker implements Callable<Long> {
 				((BaseConnection) connection).cancelQuery();
 			} catch (SQLException ignore) {
 				// ignore if failed to cancel query
+			}
+
+			try {
+				copyBackendThread.interrupt();
+			} catch (SecurityException ignore) {
 			}
 
 			throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, e);
