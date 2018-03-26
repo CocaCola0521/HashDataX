@@ -45,6 +45,11 @@
             <scope>system</scope>
             <systemPath>${basedir}/src/main/libs/edb-jdbc16.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.ibm.informix</groupId>
+            <artifactId>jdbc</artifactId>
+            <version>4.10.10.0</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
