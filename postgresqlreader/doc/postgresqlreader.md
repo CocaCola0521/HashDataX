@@ -159,7 +159,7 @@ PostgresqlReader插件实现了从PostgreSQL读取数据。在底层实现上，
 
 * **column**
 
-	* 描述：所配置的表中需要同步的列名集合，使用JSON的数组描述字段信息。用户使用*代表默认使用所有列配置，例如['*']。
+	* 描述：所配置的表中需要同步的列名集合，使用JSON的数组描述字段信息。用户使用\*代表默认使用所有列配置，例如['\*']。
 
 	  支持列裁剪，即列可以挑选部分列进行导出。
 
@@ -181,7 +181,7 @@ PostgresqlReader插件实现了从PostgreSQL读取数据。在底层实现上，
 
 	  推荐splitPk用户使用表主键，因为表主键通常情况下比较均匀，因此切分出来的分片也不容易出现数据热点。
 
-	  目前splitPk仅支持整形、字符串型数据切分，`不支持浮点、日期等其他类型`。如果用户指定其他非支持类型，PostgresqlReader将报错！
+	  目前splitPk仅支持整形数据切分，`不支持浮点、字符串型、日期等其他类型`。如果用户指定其他非支持类型，PostgresqlReader将报错！
 
 	 	splitPk设置为空，底层将视作用户不允许对单表进行切分，因此使用单通道进行抽取。
 
@@ -191,7 +191,7 @@ PostgresqlReader插件实现了从PostgreSQL读取数据。在底层实现上，
 
 * **where**
 
-	* 描述：筛选条件，Pgeader根据指定的column、table、where条件拼接SQL，并根据这个SQL进行数据抽取。例如在做测试时，可以将where条件指定为limit 10；在实际业务场景中，往往会选择当天的数据进行同步，可以将where条件指定为gmt_create > $bizdate 。<br />。
+	* 描述：筛选条件，MysqlReader根据指定的column、table、where条件拼接SQL，并根据这个SQL进行数据抽取。在实际业务场景中，往往会选择当天的数据进行同步，可以将where条件指定为gmt_create > $bizdate 。注意：不可以将where条件指定为limit 10，limit不是SQL的合法where子句。<br />
 
           where条件可以有效地进行业务增量同步。		where条件不配置或者为空，视作全表同步数据。
 

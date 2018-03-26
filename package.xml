@@ -103,6 +103,13 @@
             </includes>
             <outputDirectory>datax</outputDirectory>
         </fileSet>
+		<fileSet>
+             <directory>otsstreamreader/target/datax/</directory>
+             <includes>
+                 <include>**/*.*</include>
+             </includes>
+             <outputDirectory>datax</outputDirectory>
+         </fileSet>
         <fileSet>
             <directory>txtfilereader/target/datax/</directory>
             <includes>
@@ -137,7 +144,7 @@
                 <include>**/*.*</include>
             </includes>
             <outputDirectory>datax</outputDirectory>
-        </fileSet>        
+        </fileSet>
         <fileSet>
             <directory>streamreader/target/datax/</directory>
             <includes>
@@ -379,6 +386,20 @@
             <outputDirectory>datax</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>hbase11xsqlwriter/target/datax/</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>datax</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>elasticsearchwriter/target/datax/</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>datax</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>gpdbwriter/target/datax/</directory>
             <includes>
                 <include>**/*.*</include>
@@ -392,6 +413,5 @@
             </includes>
             <outputDirectory>datax</outputDirectory>
         </fileSet>
-        
     </fileSets>
 </assembly>
