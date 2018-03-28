@@ -34,7 +34,6 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 	private volatile boolean stopWriter = false;
 
 	private CompletionService<Long> cs = null;
-	private ExecutorService threadPool;
 
 	public CopyWriterTask() {
 		super(DataBaseType.PostgreSQL);

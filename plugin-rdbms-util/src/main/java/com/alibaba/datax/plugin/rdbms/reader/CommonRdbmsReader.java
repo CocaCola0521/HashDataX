@@ -206,17 +206,22 @@ public class CommonRdbmsReader {
                 long lastTime = System.nanoTime();
                 while (rs.next()) {
                     rsNextUsedTime += (System.nanoTime() - lastTime);
-                    this.transportOneRecord(recordSender, rs,
+                    Record record = this.transportOneRecord(recordSender, rs,
                             metaData, columnNumber, mandatoryEncoding, taskPluginCollector);
                     lastTime = System.nanoTime();
+
+					if (record.getColumnNumber() != columnNumber) {
+						throw DataXException.asDataXException(DBUtilErrorCode.COLUMN_SPLIT_ERROR,
+								String.format("数据源读取字段数:%s 与 Record 数据结构中记录数:%s 不相等，transportOneRecord() 方法有bug.",
+										columnNumber, record.getColumnNumber()));
+					}
                 }
 
                 allResultPerfRecord.end(rsNextUsedTime);
                 //目前大盘是依赖这个打印，而之前这个Finish read record是包含了sql查询和result next的全部时间
                 LOG.info("Finished read record by Sql: [{}\n] {}.",
                         querySql, basicMsg);
-
-            }catch (Exception e) {
+            } catch (Exception e) {
                 throw RdbmsException.asQueryException(this.dataBaseType, e, querySql, table, username);
             } finally {
                 DBUtil.closeDBResources(null, conn);
