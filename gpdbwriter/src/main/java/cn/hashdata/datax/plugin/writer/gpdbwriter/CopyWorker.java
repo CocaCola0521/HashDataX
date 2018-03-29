@@ -55,8 +55,6 @@ public class CopyWorker implements Callable<Long> {
 				try {
 					CopyManager mgr = new CopyManager((BaseConnection) connection);
 					return mgr.copyIn(sql, pipeIn);
-				} catch (PSQLException e) {
-					throw new IOException("无法向目标表写入数据: " + e.getMessage());
 				} finally {
 					try {
 						pipeIn.close();
@@ -70,18 +68,6 @@ public class CopyWorker implements Callable<Long> {
 		copyBackendThread.setName(sql);
 		copyBackendThread.setDaemon(true);
 		copyBackendThread.start();
-	}
-
-	public void write(byte[] record) throws InterruptedException {
-		queue.put(record);
-
-		if (copyResult.isDone()) {
-			try {
-				copyResult.get();
-			} catch (ExecutionException e) {
-				throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, e);
-			}
-		}
 	}
 
 	@Override
@@ -104,8 +90,6 @@ public class CopyWorker implements Callable<Long> {
 
 			pipeOut.flush();
 			pipeOut.close();
-			Long count = copyResult.get();
-			return count;
 		} catch (Exception e) {
 			try {
 				((BaseConnection) connection).cancelQuery();
@@ -116,6 +100,16 @@ public class CopyWorker implements Callable<Long> {
 			try {
 				copyBackendThread.interrupt();
 			} catch (SecurityException ignore) {
+			}
+
+			try {
+				copyResult.get();
+			} catch (ExecutionException exec) {
+				if (exec.getCause() instanceof PSQLException) {
+					throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, exec.getCause());
+				}
+				// ignore others
+			} catch (Exception ignore) {
 			}
 
 			throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, e);
@@ -133,6 +127,13 @@ public class CopyWorker implements Callable<Long> {
 			}
 
 			DBUtil.closeDBResources(null, null, connection);
+		}
+
+		try {
+			Long count = copyResult.get();
+			return count;
+		} catch (Exception e) {
+			throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, e);
 		}
 	}
 
