@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -67,15 +68,13 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 
 	private void send(Record record, LinkedBlockingQueue<Record> queue)
 			throws InterruptedException, ExecutionException {
-		while (queue.offer(record) == false) {
+		while (queue.offer(record, 1000, TimeUnit.MILLISECONDS) == false) {
 			LOG.debug("Record queue is full, increase num_copy_processor for performance.");
 			Future<Long> result = cs.poll();
 
 			if (result != null) {
 				result.get();
 			}
-
-			Thread.sleep(100);
 		}
 	}
 
@@ -139,6 +138,8 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 			for (int i = 0; i < numWriter; i++) {
 				cs.take().get();
 			}
+		} catch (ExecutionException e) {
+			throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, e.getCause());
 		} catch (Exception e) {
 			throw DataXException.asDataXException(DBUtilErrorCode.WRITE_DATA_ERROR, e);
 		} finally {
