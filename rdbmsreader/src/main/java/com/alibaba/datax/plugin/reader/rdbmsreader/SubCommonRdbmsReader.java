@@ -150,20 +150,26 @@ public class SubCommonRdbmsReader extends CommonRdbmsReader {
                                                 metaData.getColumnType(i),
                                                 metaData.getColumnClassName(i)));
                     }
-                }
-            } catch (Exception e) {
-                if (IS_DEBUG) {
-                    LOG.debug("read data " + record.toString()
-                            + " occur exception:", e);
-                }
-                // TODO 这里识别为脏数据靠谱吗？
-                taskPluginCollector.collectDirtyRecord(record, e);
-                if (e instanceof DataXException) {
-                    throw (DataXException) e;
-                }
-            }
-            recordSender.sendToWriter(record);
-            return record;
-        }
-    }
+				}
+			} catch (Exception e) {
+				if (IS_DEBUG) {
+					LOG.debug("read data " + record.toString() + " occur exception:", e);
+				}
+				// TODO 这里识别为脏数据靠谱吗？
+				taskPluginCollector.collectDirtyRecord(record, e);
+				record = null;
+
+				if (e instanceof DataXException) {
+					throw (DataXException) e;
+				}
+			}
+
+            // Do not send dirty record.
+			if (record != null) {
+				recordSender.sendToWriter(record);
+			}
+
+			return record;
+		}
+	}
 }
