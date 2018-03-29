@@ -91,8 +91,8 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 			TaskPluginCollector taskPluginCollector) {
 		this.writerSliceConfig = writerSliceConfig;
 		int segment_reject_limit = writerSliceConfig.getInt("segment_reject_limit", 0);
-		this.queueSize = writerSliceConfig.getInt("copy_queue_size", 100000);
-		this.queueSize = this.queueSize < 1000 ? 1000 : this.queueSize;
+		this.queueSize = writerSliceConfig.getInt("copy_queue_size", 1000);
+		this.queueSize = this.queueSize < 10 ? 10 : this.queueSize;
 		this.numProcessor = writerSliceConfig.getInt("num_copy_processor", 4);
 		this.numProcessor = this.numProcessor < 1 ? 1 : this.numProcessor;
 		this.numWriter = writerSliceConfig.getInt("num_copy_writer", 1);
