@@ -6,12 +6,12 @@
     <parent>
         <artifactId>datax-all</artifactId>
         <groupId>com.alibaba.datax</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>v1.0.0-hashdata</version>
     </parent>
 
     <artifactId>hbasereader</artifactId>
     <name>hbasereader</name>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>v1.0.0-hashdata</version>
 
 
     <dependencies>
