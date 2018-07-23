@@ -22,7 +22,7 @@ DataX本身作为数据同步框架，将不同数据源的同步抽象为从源
 
 # Quick Start
 
-##### Download [DataX下载地址](http://datax-opensource.oss-cn-hangzhou.aliyuncs.com/datax.tar.gz)
+##### Download [DataX下载地址](https://github.com/HashDataInc/DataX/releases/download/v1.0.0/datax-v1.0.0-hashdata.tar.gz)
 
 ##### 请点击：[Quick Start](https://github.com/alibaba/DataX/blob/master/userGuid.md)
 
