@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <datax-project-version>v1.0.0-hashdata</datax-project-version>
+        <datax-project-version>v1.0.1-hashdata</datax-project-version>
         <commons-lang3-version>3.3.2</commons-lang3-version>
         <commons-configuration-version>1.10</commons-configuration-version>
         <commons-cli-version>1.2</commons-cli-version>
