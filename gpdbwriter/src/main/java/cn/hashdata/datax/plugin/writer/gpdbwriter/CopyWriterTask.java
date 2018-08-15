@@ -1,6 +1,7 @@
 package cn.hashdata.datax.plugin.writer.gpdbwriter;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -48,12 +49,25 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 		Connection connection = DBUtil.getConnection(this.dataBaseType, this.jdbcUrl, username, password);
 		DBUtil.dealWithSessionConfig(connection, writerSliceConfig, this.dataBaseType, BASIC_MESSAGE);
 		return connection;
+	}
 
+	private String constructColumnNameList(List<String> columnList) {
+		List<String> columns = new ArrayList<String>();
+
+		for (String column : columnList) {
+			if (column.endsWith("\"") && column.startsWith("\"")) {
+				columns.add(column);
+			} else {
+				columns.add("\"" + column + "\"");
+			}
+		}
+
+		return StringUtils.join(columns, ",");
 	}
 
 	public String getCopySql(String tableName, List<String> columnList, int segment_reject_limit) {
 		StringBuilder sb = new StringBuilder().append("COPY ").append(tableName).append("(")
-				.append(StringUtils.join(columnList, ","))
+				.append(constructColumnNameList(columnList))
 				.append(") FROM STDIN WITH DELIMITER '|' NULL '' CSV QUOTE '\"' ESCAPE E'\\\\'");
 
 		if (segment_reject_limit >= 2) {
@@ -110,7 +124,7 @@ public class CopyWriterTask extends CommonRdbmsWriter.Task {
 		try {
 
 			this.resultSetMetaData = DBUtil.getColumnMetaData(connection, this.table,
-					StringUtils.join(this.columns, ","));
+					constructColumnNameList(this.columns));
 			for (int i = 0; i < numProcessor; i++) {
 				cs.submit(new CopyProcessor(this, this.columnNumber, resultSetMetaData, recordQueue, dataQueue));
 			}
