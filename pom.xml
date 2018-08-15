@@ -4,7 +4,7 @@
 
     <groupId>com.alibaba.datax</groupId>
     <artifactId>datax-all</artifactId>
-    <version>v1.0.0-hashdata</version>
+    <version>v1.0.1-hashdata</version>
     <dependencies>
         <dependency>
             <groupId>org.hamcrest</groupId>
