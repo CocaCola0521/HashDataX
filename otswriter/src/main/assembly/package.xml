@@ -19,7 +19,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>otswriter-0.0.1-SNAPSHOT.jar</include>
+                <include>otswriter-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/writer/otswriter</outputDirectory>
         </fileSet>

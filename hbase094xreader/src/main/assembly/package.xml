@@ -19,7 +19,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>hbase094xreader-0.0.1-SNAPSHOT.jar</include>
+                <include>hbase094xreader-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/reader/hbase094xreader</outputDirectory>
         </fileSet>

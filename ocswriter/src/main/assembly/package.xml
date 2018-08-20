@@ -19,7 +19,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>ocswriter-0.0.1-SNAPSHOT.jar</include>
+                <include>ocswriter-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/writer/ocswriter</outputDirectory>
         </fileSet>

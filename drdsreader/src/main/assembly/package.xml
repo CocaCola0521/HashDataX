@@ -19,7 +19,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>drdsreader-0.0.1-SNAPSHOT.jar</include>
+                <include>drdsreader-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/reader/drdsreader</outputDirectory>
         </fileSet>

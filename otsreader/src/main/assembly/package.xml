@@ -19,7 +19,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>otsreader-0.0.1-SNAPSHOT.jar</include>
+                <include>otsreader-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/reader/otsreader</outputDirectory>
         </fileSet>

@@ -19,7 +19,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>gpdbjsonwriter-0.0.1-SNAPSHOT.jar</include>
+                <include>gpdbjsonwriter-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/writer/gpdbjsonwriter</outputDirectory>
         </fileSet>

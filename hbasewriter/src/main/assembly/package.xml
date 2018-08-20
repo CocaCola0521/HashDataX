@@ -19,7 +19,7 @@
 		<fileSet>
 			<directory>target/</directory>
 			<includes>
-				<include>hbasewriter-0.0.1-SNAPSHOT.jar</include>
+				<include>hbasewriter-${version}.jar</include>
 			</includes>
 			<outputDirectory>plugin/writer/hbasewriter</outputDirectory>
 		</fileSet>

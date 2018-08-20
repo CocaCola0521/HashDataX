@@ -18,7 +18,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>elasticsearchwriter-0.0.1-SNAPSHOT.jar</include>
+                <include>elasticsearchwriter-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/writer/elasticsearchwriter</outputDirectory>
         </fileSet>

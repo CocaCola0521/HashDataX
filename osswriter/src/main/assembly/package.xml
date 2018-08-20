@@ -18,7 +18,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>osswriter-0.0.1-SNAPSHOT.jar</include>
+                <include>osswriter-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/writer/osswriter</outputDirectory>
         </fileSet>

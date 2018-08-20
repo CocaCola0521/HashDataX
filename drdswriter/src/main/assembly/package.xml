@@ -19,7 +19,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>drdswriter-0.0.1-SNAPSHOT.jar</include>
+                <include>drdswriter-${version}.jar</include>
             </includes>
             <outputDirectory>plugin/writer/drdswriter</outputDirectory>
         </fileSet>
