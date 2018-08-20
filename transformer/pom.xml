@@ -14,14 +14,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <datax-version>0.0.1-SNAPSHOT</datax-version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.alibaba.datax</groupId>
             <artifactId>datax-common</artifactId>
-            <version>${datax-version}</version>
+            <version>${version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
