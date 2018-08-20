@@ -169,7 +169,7 @@ RDBMSReader插件实现了从RDBMS读取数据。在底层实现上，RDBMSReade
 	|   |-- commons-io-2.4.jar
 	|   |-- commons-lang3-3.3.2.jar
 	|   |-- commons-math3-3.1.1.jar
-	|   |-- datax-common-0.0.1-SNAPSHOT.jar
+	|   |-- datax-common-${version}.jar
 	|   |-- datax-service-face-1.0.23-20160120.024328-1.jar
 	|   |-- db2jcc4.jar
 	|   |-- druid-1.0.15.jar
@@ -180,11 +180,11 @@ RDBMSReader插件实现了从RDBMS读取数据。在底层实现上，RDBMSReade
 	|   |-- jconn3-1.0.0-SNAPSHOT.jar
 	|   |-- logback-classic-1.0.13.jar
 	|   |-- logback-core-1.0.13.jar
-	|   |-- plugin-rdbms-util-0.0.1-SNAPSHOT.jar
+	|   |-- plugin-rdbms-util-${version}.jar
 	|   `-- slf4j-api-1.7.10.jar
 	|-- plugin.json
 	|-- plugin_job_template.json
-	`-- rdbmsreader-0.0.1-SNAPSHOT.jar
+	`-- rdbmsreader-${version}.jar
 	```
   
   
