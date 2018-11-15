@@ -39,7 +39,7 @@ public final class ColumnCast {
 }
 
 class StringCast {
-	static String datetimeFormat = "yyyy-MM-dd HH:mm:ss";
+	static String datetimeFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 
 	static String dateFormat = "yyyy-MM-dd";
 
