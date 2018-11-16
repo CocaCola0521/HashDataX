@@ -461,7 +461,7 @@ public class ConfigurationTest {
 				.from("{\"a\":{\"b\":{\"c\":[0],\"B\": \"B\"},\"A\": \"A\"}}");
 		System.out.println(JSON.toJSONString(configuration.getKeys()));
 		Assert.assertTrue(JSON.toJSONString(configuration.getKeys()).equals(
-				"[\"a.b.B\",\"a.b.c[0]\",\"a.A\"]"));
+				"[\"a.b.B\",\"a.A\",\"a.b.c[0]\"]"));
 	}
 
 	@Test
