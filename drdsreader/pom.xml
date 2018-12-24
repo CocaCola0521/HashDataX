@@ -39,13 +39,12 @@
             <artifactId>plugin-rdbms-util</artifactId>
             <version>${datax-project-version}</version>
         </dependency>
+
         <dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.34</version>
-		</dependency>
-
-
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.13</version>
+        </dependency>
     </dependencies>
 
     <build>
