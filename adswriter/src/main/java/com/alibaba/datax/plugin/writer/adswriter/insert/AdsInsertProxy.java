@@ -13,8 +13,8 @@ import com.alibaba.datax.plugin.writer.adswriter.ads.TableInfo;
 import com.alibaba.datax.plugin.writer.adswriter.util.AdsUtil;
 import com.alibaba.datax.plugin.writer.adswriter.util.Constant;
 import com.alibaba.datax.plugin.writer.adswriter.util.Key;
-import com.mysql.jdbc.JDBC4PreparedStatement;
 
+import com.mysql.cj.jdbc.ServerPreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -251,7 +251,7 @@ public class AdsInsertProxy {
 
     private void doBatchRecord(final List<Record> buffer, final String mode) throws SQLException {
         List<Class<?>> retryExceptionClasss = new ArrayList<Class<?>>();
-        retryExceptionClasss.add(com.mysql.jdbc.exceptions.jdbc4.CommunicationsException.class);
+        retryExceptionClasss.add(com.mysql.cj.jdbc.exceptions.CommunicationsException.class);
         retryExceptionClasss.add(java.net.SocketException.class);
         try {
             RetryUtil.executeWithRetry(new Callable<Boolean>() {
@@ -333,7 +333,7 @@ public class AdsInsertProxy {
     
     private void doOneRecord(List<Record> buffer, final String mode) {
         List<Class<?>> retryExceptionClasss = new ArrayList<Class<?>>();
-        retryExceptionClasss.add(com.mysql.jdbc.exceptions.jdbc4.CommunicationsException.class);
+        retryExceptionClasss.add(com.mysql.cj.jdbc.exceptions.CommunicationsException.class);
         retryExceptionClasss.add(java.net.SocketException.class);
         for (final Record record : buffer) {
             try {
@@ -400,7 +400,7 @@ public class AdsInsertProxy {
     
     private boolean isRetryable(Throwable e) {
         Class<?> meetExceptionClass = e.getClass();
-        if (meetExceptionClass == com.mysql.jdbc.exceptions.jdbc4.CommunicationsException.class) {
+        if (meetExceptionClass == com.mysql.cj.jdbc.exceptions.CommunicationsException.class) {
             return true;
         }
         if (meetExceptionClass == java.net.SocketException.class) {
@@ -437,7 +437,7 @@ public class AdsInsertProxy {
                 int columnSqltype = this.userConfigColumnsMetaData.get(columnName).getLeft();
                 prepareColumnTypeValue(statement, columnSqltype, record.getColumn(preparedParamsIndex), i, columnName);
             }
-            sql = ((JDBC4PreparedStatement) statement).asSql();
+            sql = ((ServerPreparedStatement) statement).asSql();
             DBUtil.closeDBResources(statement, null);
         } else {
             sqlSb.append(this.deleteSqlPrefix);
@@ -468,7 +468,7 @@ public class AdsInsertProxy {
                 prepareColumnTypeValue(statement, columnSqlType, record.getColumn(primaryKeyInUserConfigIndex), i, columnName);
                 i++;
             }
-            sql = ((JDBC4PreparedStatement) statement).asSql();
+            sql = ((ServerPreparedStatement) statement).asSql();
             DBUtil.closeDBResources(statement, null);
         }
         return sql;
