@@ -4,7 +4,7 @@
 
     <groupId>com.alibaba.datax</groupId>
     <artifactId>datax-all</artifactId>
-    <version>v1.0.3-hashdata</version>
+    <version>v1.0.4-hashdata</version>
     <dependencies>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <datax-project-version>v1.0.3-hashdata</datax-project-version>
+        <datax-project-version>v1.0.4-hashdata</datax-project-version>
         <commons-lang3-version>3.3.2</commons-lang3-version>
         <commons-configuration-version>1.10</commons-configuration-version>
         <commons-cli-version>1.2</commons-cli-version>

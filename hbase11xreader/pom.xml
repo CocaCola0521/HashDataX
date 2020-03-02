@@ -4,11 +4,11 @@
     <parent>
         <groupId>com.alibaba.datax</groupId>
         <artifactId>datax-all</artifactId>
-        <version>v1.0.3-hashdata</version>
+        <version>v1.0.4-hashdata</version>
     </parent>
     <artifactId>hbase11xreader</artifactId>
     <name>hbase11xreader</name>
-    <version>v1.0.3-hashdata</version>
+    <version>v1.0.4-hashdata</version>
     <packaging>jar</packaging>
 
     <properties>

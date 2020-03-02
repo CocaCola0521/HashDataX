@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>datax-all</artifactId>
 		<groupId>com.alibaba.datax</groupId>
-		<version>v1.0.3-hashdata</version>
+		<version>v1.0.4-hashdata</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
