@@ -140,6 +140,11 @@ public class CopyWorker implements Callable<Long> {
 	private void changeCsvSizelimit(Connection conn) {
 		List<String> sqls = new ArrayList<String>();
 		sqls.add("set gp_max_csv_line_length = " + Integer.toString(MaxCsvSize));
-		WriterUtil.executeSqls(conn, sqls, task.getJdbcUrl(), DataBaseType.PostgreSQL);
+
+		try {
+			WriterUtil.executeSqls(conn, sqls, task.getJdbcUrl(), DataBaseType.PostgreSQL);
+		} catch (Exception e) {
+			LOG.warn("Cannot set gp_max_csv_line_length to " + MaxCsvSize);
+		}
 	}
 }
